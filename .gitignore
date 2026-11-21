@@ -1,0 +1,8 @@
+# binaries / test
+*.test
+*.out
+# vendor (零依赖，不需提交)
+vendor/
+# editor
+.idea/
+.vscode/
