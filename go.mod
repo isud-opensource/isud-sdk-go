@@ -1,3 +1,3 @@
-module github.com/l-zhiyuan/isud-sdk-go
+module github.com/isud-opensource/isud-sdk-go
 
 go 1.21

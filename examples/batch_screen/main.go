@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/l-zhiyuan/isud-sdk-go/isud"
+	"github.com/isud-opensource/isud-sdk-go/isud"
 )
 
 type summary struct {

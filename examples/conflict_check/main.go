@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/l-zhiyuan/isud-sdk-go/isud"
+	"github.com/isud-opensource/isud-sdk-go/isud"
 )
 
 func main() {

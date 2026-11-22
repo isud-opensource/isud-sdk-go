@@ -1,11 +1,13 @@
-# isud-sdk-go
+# isud-sdk-go (Go)
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/isud-opensource/isud-sdk-go.svg)](https://pkg.go.dev/github.com/isud-opensource/isud-sdk-go)
 
 优标宝开放 API 的 Go SDK。零第三方运行时依赖（仅标准库 `net/http`），契约驱动。
 
 ## 安装
 
 ```bash
-go get github.com/l-zhiyuan/isud-sdk-go
+go get github.com/isud-opensource/isud-sdk-go
 ```
 
 ## 三步跑通（Time-to-Hello-World < 3 分钟）
@@ -21,7 +23,7 @@ import (
     "context"
     "fmt"
     "os"
-    "github.com/l-zhiyuan/isud-sdk-go/isud"
+    "github.com/isud-opensource/isud-sdk-go/isud"
 )
 
 func main() {
