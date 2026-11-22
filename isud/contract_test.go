@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -188,13 +189,13 @@ func TestMCPBareResponse(t *testing.T) {
 		if !strings.Contains(r.URL.Path, "/api/v1/mcp/health") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
-		return resp(200, `{"status":"ok","toolCount":13}`, nil), nil
+		return resp(200, `{"status":"ok","toolCount":15}`, nil), nil
 	})
 	h, err := c.GetMCPHealth(context.Background())
 	if err != nil {
 		t.Fatalf("GetMCPHealth: %v", err)
 	}
-	if h.Status != "ok" || h.ToolCount != 13 {
+	if h.Status != "ok" || h.ToolCount != 15 {
 		t.Errorf("unexpected health: %+v", h)
 	}
 }
@@ -225,5 +226,36 @@ func TestParseRetryAfter(t *testing.T) {
 	}
 	if got := ParseRetryAfter("garbage"); got != nil {
 		t.Errorf("garbage should return nil, got %v", got)
+	}
+}
+
+func TestDataCapabilityEndpoints(t *testing.T) {
+	cases := []struct {
+		name string
+		path string
+		call func(*Client) (any, error)
+	}{
+		{"QueryVienna", "/ip/vienna/query", func(c *Client) (any, error) { return c.QueryVienna(context.Background(), url.Values{"mode": {"codes"}}) }},
+		{"QueryGazette", "/ip/gazette/query", func(c *Client) (any, error) { return c.QueryGazette(context.Background(), url.Values{"mode": {"issues"}}) }},
+		{"QueryReview", "/ip/review/query", func(c *Client) (any, error) { return c.QueryReview(context.Background(), url.Values{"q": {"huawei"}}) }},
+		{"QueryIpr", "/ip/ipr/query", func(c *Client) (any, error) { return c.QueryIpr(context.Background(), url.Values{"mode": {"stats"}}) }},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c := newTestClient(t, func(r *http.Request) (*http.Response, error) {
+				if !strings.Contains(r.URL.Path, tc.path) {
+					t.Errorf("unexpected path %s, want %s", r.URL.Path, tc.path)
+				}
+				return resp(200, `{"code":"0000","msg":"成功","data":{"ok":true}}`, nil), nil
+			})
+			data, err := tc.call(c)
+			if err != nil {
+				t.Fatalf("%s: %v", tc.name, err)
+			}
+			m, ok := data.(map[string]any)
+			if !ok || m["ok"] != true {
+				t.Errorf("unexpected data: %#v", data)
+			}
+		})
 	}
 }

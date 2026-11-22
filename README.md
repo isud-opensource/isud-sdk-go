@@ -62,6 +62,18 @@ func main() {
 | `QueryRequestLog` | GET /ip/requests |
 | `GetMCPHealth` | GET /mcp/health |
 | `CallMCP` | POST /mcp |
+| `QueryVienna` | GET /ip/vienna/query（图形检索 VCL10 / 以图搜图） |
+| `QueryGazette` | GET /ip/gazette/query（CN 公告 / 全球事件） |
+| `QueryReview` | GET /ip/review/query（CNIPA 评审文书 298 万） |
+| `QueryIpr` | GET /ip/ipr/query（海关备案 12 万，可选接入） |
+
+四个数据能力方法均为 GET、读类 1 点/次，接收 `url.Values` 参数，返回 `any`（原始 `data` JSON，结构随 `mode` 变化）：
+
+```go
+codes, _ := client.QueryVienna(ctx, url.Values{"mode": {"codes"}, "q": {"王冠"}})
+docs, _  := client.QueryReview(ctx, url.Values{"q": {"华为"}, "size": {"10"}})
+filings, _ := client.QueryIpr(ctx, url.Values{"q": {"华为"}})
+```
 
 ## 示例项目
 

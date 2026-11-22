@@ -76,7 +76,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		mcpBaseURL: MCPBaseURL,
 		timeout:    30 * time.Second,
 		maxRetries: 3,
-		userAgent:  "isud-sdk-go/1.0.0",
+		userAgent:  "isud-sdk-go/1.0.1",
 	}
 	for _, o := range opts {
 		o(c)
@@ -498,6 +498,29 @@ func (c *Client) QueryRequestLog(ctx context.Context, requestID string) (any, er
 	q := url.Values{}
 	q.Set("requestId", requestID)
 	return c.request(ctx, requestOptions{method: http.MethodGet, path: "/ip/requests", params: q})
+}
+
+// ---- 数据能力：图形检索 / 商标公告 / 评审文书 / 海关备案（GET，读类 1 点）----
+// 返回 data 原始 JSON（any），结构随调用方传入的 mode 变化，由调用方按 mode 解析。
+
+// QueryVienna 图形检索：维也纳 VCL10 编码 / 关键词换码 / 分类树 / 以图搜图。
+func (c *Client) QueryVienna(ctx context.Context, params url.Values) (any, error) {
+	return c.request(ctx, requestOptions{method: http.MethodGet, path: "/ip/vienna/query", params: params})
+}
+
+// QueryGazette 商标公告：CN 公告明细与期号 / 全球 7 局事件。
+func (c *Client) QueryGazette(ctx context.Context, params url.Values) (any, error) {
+	return c.request(ctx, requestOptions{method: http.MethodGet, path: "/ip/gazette/query", params: params})
+}
+
+// QueryReview 评审文书：CNIPA 298 万裁定书。
+func (c *Client) QueryReview(ctx context.Context, params url.Values) (any, error) {
+	return c.request(ctx, requestOptions{method: http.MethodGet, path: "/ip/review/query", params: params})
+}
+
+// QueryIpr 海关备案：12 万条备案记录（可选接入）。
+func (c *Client) QueryIpr(ctx context.Context, params url.Values) (any, error) {
+	return c.request(ctx, requestOptions{method: http.MethodGet, path: "/ip/ipr/query", params: params})
 }
 
 // GetMCPHealth MCP 服务健康检查（无需鉴权语义由服务端决定；裸响应）。
